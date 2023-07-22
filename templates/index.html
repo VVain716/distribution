@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" rel="stylesheet">
+    <style>
+        .calculator {
+            width: 300px;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: black;
+        }
+        .calculator .display {
+            background-color: #CED0F1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .calculator .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .calculator .buttons input {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 100px;
+            padding: 10px;
+            font-size: 20px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .calculator .buttons .operator {
+            background-color: #ffd600;
+            color: #000;
+        }
+        .calculator .buttons .operator:hover {
+            background-color: #ffea00;
+        }
+        .calculator .buttons .big {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 100px;
+            padding: 10px;
+            font-size: 20px;
+            width: 100%;
+            cursor: pointer;
+            grid-column: span 2;
+
+        }
+        h1 {
+            color: white;
+            font-size: 15px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="#"><h3>Calculator</h3></a></li>
+                <li class="nav-item"><a class="nav-link" href="/horses"><h3>Horses</h3></a></li>
+            </ul>
+        </div>
+    </nav>
+    <form id="calculatorForm" action="/" method="post">
+        <div style = "position:relative; left:650px; top:150px" class="calculator">
+            <h1><bold><i>Ved</i> | Calculator</bold></h1>
+            <input type="text" name="equation" value="{{answer}}" id="number" class="display">
+            <div class="buttons">
+                <input type="button" value="AC" onclick="deleteText()">
+                <input type="button" value="+/-" onclick="opp()">
+                <input type="button" value="%" onclick="percent()">
+                <input type="button" value="÷" class="operator" onclick="operator('/')">
+                <input type="button" value="7" onclick="updateNumber(7)">
+                <input type="button" value="8" onclick="updateNumber(8)">
+                <input type="button" value="9" onclick="updateNumber(9)">
+                <input type="button" value="×" class="operator" onclick="operator('*')">
+                <input type="button" value="4" onclick="updateNumber(4)">
+                <input type="button" value="5" onclick="updateNumber(5)">
+                <input type="button" value="6" onclick="updateNumber(6)">
+                <input type="button" value="-" class="operator" onclick="operator('-')">
+                <input type="button" value="1" onclick="updateNumber(1)">
+                <input type="button" value="2" onclick="updateNumber(2)">
+                <input type="button" value="3" onclick="updateNumber(3)">
+                <input type="button" value="+" class="operator" onclick="operator('+')">
+                <input type="button" value="0" class="big" onclick="updateNumber(0)">
+                <input type="button" value="." onclick="updateNumber('.')">
+                <input type="submit" value="=" class="operator" onclick="display()">
+            </div>
+        </div>
+        <p hidden id="submit_op">{{submit_op}}</p>
+    </form>
+    <script>
+        var current_equation = "";
+        var submit_val = document.getElementById("submit_op");
+        var submit_op = false;
+        var delete_text = false;
+        console.log(submit_op)
+        var remove_val = false;
+        function updateNumber(number) {
+            console.log(remove_val)
+            var textField = document.getElementById("number");
+            if (remove_val) {
+                textField.value = '';
+                remove_val = false;
+            }
+
+            var operatorButtons = document.querySelectorAll(".operator");
+            operatorButtons.forEach(function(button) {
+                button.style.backgroundColor = "#ffd600";
+                button.style.color = "#000";
+            });
+            if (delete_text){
+                delete_text = false;
+                deleteText()
+            }
+            textField.value += number;
+        }
+        function deleteText() {
+            var textField = document.getElementById("number");
+            textField.value = '';
+        }
+        function operator(number) {
+            var textField = document.getElementById("number");
+
+            current_equation += textField.value;
+            current_equation += number;
+            console.log(current_equation);
+
+            if (submit_op) {
+                textField.value = current_equation;
+                submit_op = false;
+                document.getElementById("calculatorForm").submit();
+            } else {
+                submit_op = true;
+            }
+
+            var operatorButtons = document.querySelectorAll(".operator");
+            operatorButtons.forEach(function(button) {
+                button.style.backgroundColor = "#ffd600";
+                button.style.color = "#000";
+            });
+
+            delete_text = true;
+
+            var clickedOperatorButton;
+            if (number === "*") {
+                clickedOperatorButton = document.querySelector('input[value="×"][class="operator"]');
+            } else if (number === "/") {
+                clickedOperatorButton = document.querySelector('input[value="÷"][class="operator"]');
+            } else {
+                clickedOperatorButton = document.querySelector('input[value="' + number + '"][class="operator"]');
+            }
+
+            clickedOperatorButton.style.backgroundColor = "#fff";
+            clickedOperatorButton.style.color = "#ffd600";
+        }
+
+
+        function opp() {
+            var textField = document.getElementById("number");
+            if (textField.value.charAt(0) == '-') {
+                var result = textField.value.substring(1);
+                textField.value = result;
+            } else {
+                var newText = '-' + textField.value;
+                textField.value = newText;
+            }
+        }
+        function deleteOp() {
+            submit_val.innerHTML = ""
+        }
+        function percent() {
+            var textField = document.getElementById("number");
+            var result = parseFloat(textField.value) / 100;
+            textField.value = result;
+        }
+
+        function display() {
+            var textField = document.getElementById("number");
+            current_equation += textField.value;
+            textField.value = current_equation;
+            remove_val = true;
+        }
+        function init() {
+            var inner_value = submit_val.innerHTML;
+            console.log(inner_value);
+            if (inner_value == "+" || inner_value == "-" || inner_value == "*" || inner_value == "/") {
+                operator(inner_value);
+            }
+        }
+
+        function clear() {
+            deleteText()
+            deleteOp()
+        }
+        init()
+    </script>
+</body>
+</html>
