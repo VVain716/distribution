@@ -12,21 +12,23 @@ lib.calculate.restype = c_float
 def index():
     if request.method == "POST":
         equation = request.form.get("equation")
+        if equation[len(equation) - 1] == '=':
+            equation = equation[:-1]
         new_equation = parse(equation)
         if not new_equation:
             return render_template("index.html", answer="Error")
         try:
             num1 = c_float(new_equation[0])
         except TypeError:
-            return redirect("/apology")
+            return render_template("index.html", answer="Error")
         try:
             operator = c_char(str(new_equation[1]).encode())
         except TypeError:
-            return redirect("/apology")
+            return render_template("index.html", answer="Error")
         try:
             num2 = c_float(new_equation[2])
         except TypeError:
-            return redirect("/apology")
+            return render_template("index.html", answer="Error")
         real_num1 = new_equation[0]
         real_operator = new_equation[1]
         real_num2 = new_equation[2]
@@ -66,15 +68,15 @@ def parse(equation):
     try:
         num1 = float(equation[:index])
     except ValueError:
-        return redirect("/apology")
+        return render_template("index.html", answer="Error")
     try:
         operator = equation[index]
     except ValueError:
-        return redirect("/apology")
+        return render_template("index.html", answer="Error")
     try:
         num2 = float(equation[index+1:])
     except ValueError:
-        return redirect("/apology")
+        return render_template("index.html", answer="Error")
     if negative:
         num1 *= -1
     return (num1,  operator, num2, submit_op)

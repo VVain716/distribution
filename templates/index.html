@@ -62,7 +62,7 @@
     <form id="calculatorForm" action="/" method="post">
         <div style = "position:relative; left:650px; top:150px" class="calculator">
             <h1><bold><i>Ved</i> | Calculator</bold></h1>
-            <input type="text" name="equation" value="{{answer}}" id="number" class="display">
+            <input type="text" name="equation" value="{{answer}}" id="number" class="display" oninput="isYellow()">
             <div class="buttons">
                 <input type="button" value="AC" onclick="deleteText()">
                 <input type="button" value="+/-" onclick="opp()">
@@ -94,6 +94,27 @@
         var delete_text = false;
         console.log(submit_op)
         var remove_val = false;
+        function isYellow() {
+            let text = document.getElementById("number").value;
+            let i = text.length - 1
+            number = text[i]
+            if (number === "=") {
+                document.getElementById("calculatorForm").submit()
+            }
+            else if (number === "*") {
+                clickedOperatorButton = document.querySelector('input[value="×"][class="operator"]');
+                clickedOperatorButton.style.backgroundColor = "#fff";
+                clickedOperatorButton.style.color = "#ffd600";
+            } else if (number === "/") {
+                clickedOperatorButton = document.querySelector('input[value="÷"][class="operator"]');
+                clickedOperatorButton.style.backgroundColor = "#fff";
+                clickedOperatorButton.style.color = "#ffd600";
+            } else if (number === "+" || number == "-"){
+                clickedOperatorButton = document.querySelector('input[value="' + number + '"][class="operator"]');
+                clickedOperatorButton.style.backgroundColor = "#fff";
+                clickedOperatorButton.style.color = "#ffd600";
+            }   
+        }
         function updateNumber(number) {
             console.log(remove_val)
             var textField = document.getElementById("number");
