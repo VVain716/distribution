@@ -1,12 +1,6 @@
 from flask import Flask, render_template, request, redirect, send_file
-from ctypes import CDLL, c_float, c_char
 from math import trunc
 app = Flask(__name__)
-
-lib = CDLL("./calculate.so")
-
-lib.calculate.argtypes = [c_float, c_char, c_float]
-lib.calculate.restype = c_float
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -18,15 +12,15 @@ def index():
         if not new_equation:
             return render_template("index.html", answer="Error")
         try:
-            num1 = c_float(new_equation[0])
+            num1 = float(new_equation[0])
         except TypeError:
             return render_template("index.html", answer="Error")
         try:
-            operator = c_char(str(new_equation[1]).encode())
+            operator = str(new_equation[1])
         except TypeError:
             return render_template("index.html", answer="Error")
         try:
-            num2 = c_float(new_equation[2])
+            num2 = float(new_equation[2])
         except TypeError:
             return render_template("index.html", answer="Error")
         real_num1 = new_equation[0]
@@ -37,7 +31,7 @@ def index():
             return render_template("index.html", answer="Error")
         if real_operator == '/' and real_num2 == 0:
             return render_template("index.html", answer="Error")
-        answer = lib.calculate(num1, operator, num2)
+        answer = calculate(num1, operator, num2)
         if answer == int(answer):
             answer = trunc(answer)
         else:
@@ -80,13 +74,16 @@ def parse(equation):
     if negative:
         num1 *= -1
     return (num1,  operator, num2, submit_op)
-@app.route("/apology")
-def apology():
-    return render_template("apology.html")
 
-@app.route("/horses")
-def horse():
-    return render_template("horses.html")
+
+def calculate(num1, op, num2):
+    """
+    Your task is to make code that should take two floats, num1, and num2 and an str, op
+
+    Op can be anything. If op is one of the 4 fundimental functions ('+', '-', '*', '/'), you should return the answer accordingly
+    """
+    raise NotImplementedError
+
 
 if __name__ == "__main__":
     app.run()
