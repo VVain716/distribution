@@ -82,7 +82,16 @@ def calculate(num1, op, num2):
 
     Op can be anything. If op is one of the 4 fundimental functions ('+', '-', '*', '/'), you should return the answer accordingly
     """
-    raise NotImplementedError
+    if op == '+':
+        return num1 + num2
+    elif op == '-':
+        return num1 - num2
+    elif op == '*':
+        return num1 * num2
+    elif op == '/':
+        return num1 / num2
+    else:
+        return -1
 
 
 if __name__ == "__main__":
